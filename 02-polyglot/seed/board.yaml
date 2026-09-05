@@ -1,0 +1,37 @@
+version: 1
+tasks:
+- id: POLY-1
+  title: Add German (de) to the contract
+  repos: [hello-commands]
+  status: open
+  exclusive: false
+  ext_provider: jira
+  ext_id: POLY-1
+- id: POLY-2
+  title: Rename greeting to message in the contract
+  repos: [hello-commands]
+  status: open
+  exclusive: false
+  ext_provider: jira
+  ext_id: POLY-2
+- id: POLY-3
+  title: Decide and implement unknown-code behaviour
+  repos: [hello-core, hello-cli]
+  status: open
+  exclusive: false
+  ext_provider: jira
+  ext_id: POLY-3
+- id: POLY-4
+  title: Add a --list flag to the CLI
+  repos: [hello-cli]
+  status: open
+  exclusive: false
+  ext_provider: jira
+  ext_id: POLY-4
+- id: POLY-5
+  title: Refresh the language table in the docs
+  repos: [hello-docs]
+  status: open
+  exclusive: false
+  ext_provider: jira
+  ext_id: POLY-5

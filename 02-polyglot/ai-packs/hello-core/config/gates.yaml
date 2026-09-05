@@ -1,0 +1,11 @@
+gates:
+  - id: resolvable
+    title: Every declared language resolves through the core
+    from_level: build
+    per_repo: >
+      python3 -c "import sys; sys.path.insert(0,'.');
+      from hello_core import Catalog;
+      c=Catalog();
+      missing=[k for k in c.codes() if not c.greet(k)];
+      assert not missing, f'declared but unresolvable: {missing}';
+      print(f'{len(c.codes())} language(s) resolve')"

@@ -1,0 +1,7 @@
+# This pack is named after hello-commands, so what it declares applies there and
+# nowhere else — no `only_repos:` needed.
+gates:
+  - id: contract
+    title: The contract parses and keeps its shape
+    from_level: static
+    per_repo: "python3 -m pytest -q tests/test_catalog.py"

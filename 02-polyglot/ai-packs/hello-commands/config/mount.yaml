@@ -1,0 +1,2 @@
+rules:
+  - { file: rules/adding-a-language.md }

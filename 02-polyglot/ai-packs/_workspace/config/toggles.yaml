@@ -1,0 +1,51 @@
+# Decisions this domain keeps re-making.
+#
+# The deck core ships the universal ones — how far to verify, how to deploy,
+# where the commit stops. This file adds the decisions that only make sense
+# here, and relabels core ones in this domain's vocabulary.
+#
+# Two mechanisms:
+#   NEW ENTRY   declared in the catalog format, like any core toggle.
+#   OVERRIDE    repeat a core `id` with `overrides: true`. Without that flag the
+#               merge is refused, so nothing shadows a core decision by accident.
+#
+# Authoring rules, enforced by `deck toggle validate --strict`:
+#   - `question.header` at most 12 characters
+#   - at most 4 askable values (use `askable_values` to choose which)
+#   - quote `off`, `on`, `yes`, `no` — YAML turns them into booleans
+#   - a toggle in the `security` group may not default to `ask`
+#
+# A good entry answers four things: what it is, why it exists, what each value
+# costs you, and how the question should be put to a person.
+
+version: 1
+
+# Entries go under the key below, indented as the example is. Uncomment it and
+# edit, or delete it and write your own.
+toggles:
+
+# Example — delete once you have your own:
+#
+#   - id: api_compat
+#     group: quality
+#     title: API compatibility
+#     summary: How far this change may alter the published contract.
+#     type: enum
+#     values: [strict, additive, breaking]
+#     default: strict
+#     stage: [plan]
+#     applies_to: ["**/openapi.yaml"]
+#     risk: high
+#     rationale: >
+#       The schema is a contract with every client already deployed. Declaring
+#       the intent up front is cheaper than discovering it in staging.
+#     impact:
+#       strict: Additive only. Nothing removed, renamed or narrowed.
+#       additive: New fields land; old ones are marked obsolete but stay.
+#       breaking: Requires a migration note and a version bump.
+#     question:
+#       header: API compat
+#       text: May this change alter the published contract?
+#       options:
+#         - { value: strict,   label: Additive only, description: "Clients in the field keep working." }
+#         - { value: breaking, label: May break,     description: "Needs a migration note." }

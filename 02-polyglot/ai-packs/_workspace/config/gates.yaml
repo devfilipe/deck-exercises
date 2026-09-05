@@ -1,0 +1,13 @@
+# How this workspace verifies itself. deck runs these strings; it has never
+# heard of ruff or pytest.
+gates:
+  - id: lint
+    title: ruff
+    from_level: static
+    per_repo: "ruff check ."
+
+  - id: test
+    title: unit tests
+    from_level: build
+    per_repo: "python3 -m pytest -q"
+    when: { unit_tests: [required, opportunistic] }

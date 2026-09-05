@@ -1,0 +1,9 @@
+{
+  "name": "hello-commands",
+  "description": "Operating knowledge for hello-commands",
+  "version": "0.1.0",
+  "keywords": [
+    "deck",
+    "pack"
+  ]
+}

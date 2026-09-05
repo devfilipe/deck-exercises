@@ -1,0 +1,26 @@
+version: 1
+
+toggles:
+  - id: locale_aliases
+    group: quality
+    title: Accepted language codes
+    summary: Whether the CLI accepts regional tags, or only the codes the contract declares.
+    type: enum
+    values: [strict, aliases]
+    default: strict
+    stage: [plan]
+    applies_to: ["hello-cli/**", "hello-commands/**"]
+    risk: low
+    rationale: >
+      Users type pt-BR and en_US out of habit. Accepting them means a mapping
+      that has to be maintained beside the contract and can disagree with it;
+      refusing them means an error message that has to teach the right code.
+    impact:
+      strict: Only codes the contract declares. One source of truth.
+      aliases: pt-BR resolves to pt. A second table to keep honest.
+    question:
+      header: Codes
+      text: Should the CLI accept regional tags like pt-BR?
+      options:
+        - { value: strict,  label: Declared only, description: "One source of truth: the contract." }
+        - { value: aliases, label: Map regions,   description: "Friendlier, and a second table that can drift." }

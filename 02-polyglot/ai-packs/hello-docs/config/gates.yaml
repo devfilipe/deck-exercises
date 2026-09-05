@@ -1,0 +1,8 @@
+gates:
+  - id: table
+    title: The published table agrees with the contract
+    from_level: static
+    # `downstream: true` keeps this repository out of build targets, not out of
+    # verification — the obligation is the whole point of listing it.
+    per_repo: "python3 -m pytest -q tests"
+    include_downstream: true
