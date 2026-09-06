@@ -207,7 +207,7 @@ content, the runtime supplies the box.** It is what became the options screen in
 exercise 1.
 
 ```bash
-deck toggle set --scope workspace cmd_compat breaking
+deck toggle set --at workspace cmd_compat breaking
 deck toggle explain cmd_compat | head -8
 ```
 
@@ -288,7 +288,7 @@ For a greeting CLI, `error` is defensible and is what the code already does. Tak
 existing tests turning red, which is this task's lesson.
 
 ```bash
-deck toggle set --scope workspace unknown_locale fallback_en
+deck toggle set --at workspace unknown_locale fallback_en
 ./hello-cli/bin/hello --lang xx
 ```
 
