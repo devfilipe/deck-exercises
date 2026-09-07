@@ -46,17 +46,32 @@ echo "deck      $(command -v deck)  ·  $(deck --version 2>&1)"
 echo "workspace $WORK"
 
 FAILED=0
+PASSED=0
+FAILURES=0
 for script in "$HERE"/verify/[0-9]*.sh; do
   name=$(basename "$script")
   case "$WHICH" in
     all) ;;
     *) [[ "$name" == "$WHICH"* ]] || continue ;;
   esac
-  bash "$script" "$WORK" || FAILED=1
+  # Captured rather than streamed, so the totals can be added up. Each script
+  # prints its own "N passed, M failed", and the last one printed used to be the
+  # last line before the closing sentence — which reads as the total for the run
+  # and is the total for one exercise. A number a reader would quote has to be
+  # the number they think it is.
+  log="$WORK/.verify-$name.log"
+  bash "$script" "$WORK" > "$log" 2>&1 || FAILED=1
+  cat "$log"
+  p=$(grep -oE '[0-9]+ passed' "$log" | tail -1 | grep -oE '[0-9]+' || true)
+  f=$(grep -oE '[0-9]+ failed' "$log" | tail -1 | grep -oE '[0-9]+' || true)
+  PASSED=$((PASSED + ${p:-0}))
+  FAILURES=$((FAILURES + ${f:-0}))
 done
 
 echo
-if [ "$FAILED" -ne 0 ]; then
+echo "-----------------------------------------------"
+echo "$((PASSED + FAILURES)) checks across every exercise · $PASSED passed, $FAILURES failed"
+if [ "$FAILED" -ne 0 ] || [ "$FAILURES" -ne 0 ]; then
   echo "Something an exercise tells a reader to do no longer works."
   echo "Fix the exercise, or the check, before the next reader finds it."
   exit 1
