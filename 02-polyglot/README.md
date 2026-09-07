@@ -69,6 +69,13 @@ deck impact hello-commands
 `include_downstream: true`, because `downstream` means "produces no artifact",
 not "is never checked".
 
+`hello-cli` and `hello-core` each carry a `ruff.toml` pinning one rule. It is
+worth two minutes: ruff 0.16 dropped `E402` from its defaults, which turned the
+`# noqa: E402` those repositories need into an *unused* directive and failed the
+`lint` gate on files nobody had touched. Nothing about the code changed — a tool
+it had not pinned did. deck has never heard of ruff; the gate runs the string
+the pack declares, and what that string means is the repository's business.
+
 ## The decisions
 
 | toggle | asked when you touch | the question |

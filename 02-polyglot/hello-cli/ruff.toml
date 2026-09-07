@@ -1,0 +1,14 @@
+# The rules this repository is linted against.
+#
+# Pinned rather than left to ruff's defaults, because the defaults move: 0.16
+# dropped `E402` from them, which turned the `# noqa: E402` in this repository —
+# needed because the test files put the sibling checkout on `sys.path` before
+# importing it — into an *unused* directive, and `RUF100` failed the lint gate
+# on a file nobody had touched.
+#
+# That is the ordinary way a green ladder goes red: not a change to the code,
+# but a change to a tool the code did not pin. deck has never heard of ruff. The
+# gate runs the string this workspace's pack declares, and what that string
+# means is this repository's business to fix.
+[lint]
+extend-select = ["E402"]
