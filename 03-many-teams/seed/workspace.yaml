@@ -1,0 +1,51 @@
+# Seed for .deck/workspace.yaml.
+#
+# `.deck/` is per machine and normally not versioned. This file is shipped
+# because the exercise needs the registry to already exist — the graph is what
+# exercise 1 taught, and repeating it here would buy nothing. Every path in it
+# is relative, and `setup.sh` copies it in.
+#
+# What is deliberately NOT here, because writing it is the exercise:
+#   packs_root   which collections are in play, and in what order
+#   paths        the directories the workspace uses but does not change
+#   targets      the deployment allowlist
+#   scopes       how the registry is carved into initiatives
+version: 1
+packs_root: []
+requires_files: []
+paths: {}
+
+repos:
+  catalog-schema:
+    path: catalog-schema
+    role: the published product contract — the only place a field is declared
+    build: "python3 -m json.tool catalog.json"
+    impacts: [catalog-api, storefront-web]
+
+  catalog-api:
+    path: catalog-api
+    role: serves what the contract declares, and invents no field of its own
+    build: "python3 -m json.tool routes.json"
+    impacts: [storefront-web]
+    couples: [deploy-scripts]
+
+  storefront-web:
+    path: storefront-web
+    role: the pages a customer sees
+    build: "python3 -m json.tool pages.json"
+    impacts: []
+
+  deploy-scripts:
+    path: deploy-scripts
+    role: the commands that put a build where it runs
+    build: "sh -n deploy.sh"
+    impacts: []
+
+scopes: {}
+
+targets: []
+
+backlog:
+- { type: tasks, file: docs/board.yaml }
+
+packs: []

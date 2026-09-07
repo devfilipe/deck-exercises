@@ -6,6 +6,11 @@ you will know where each thing lives and why.
 
 About twenty minutes. No agent required; the last step adds one.
 
+> Every command below is replayed by [CI](../verify/01-first-workspace.sh) on
+> every push, and every quoted output is asserted. If a step here stops working,
+> the build says so before you do. The one exception is step 10, which needs
+> Claude Code and is marked optional for that reason.
+
 ---
 
 ## 0 · Check the tool answers
@@ -65,10 +70,16 @@ deck setup  (discovery — nothing will be written)  ·  ~/lab/hello
 
 2  Where will the knowledge live?
    No pack collection named.
-   ...
+   Knowledge has to live somewhere a team can review and version, and
+   that is a decision worth making deliberately rather than by default.
+   Re-run with --packs-root <path> — a directory in this workspace, or a
+   separate repository your team shares:
 
-Nothing written.
+      deck setup --packs-root ./ai-packs          # beside the code
+      deck setup --packs-root ~/work/ai-packs     # a shared repository
 ```
+
+It exits **non-zero**, and `ls -A` shows nothing was written.
 
 **It stops at step 2 on purpose.** Not an error, and not missing information —
 it is the one decision in the whole process the tool has no right to make for
@@ -86,11 +97,15 @@ deck setup --packs-root ./ai-packs --create-packs
 
 ```
 4  Linking packs to repositories, by name
-   linked   hello-api      ai-packs/hello-api
-   linked   hello-cli      ai-packs/hello-cli
-   linked   hello-schema   ai-packs/hello-schema
-   shared   (every repository)   ai-packs/_workspace
+   linked   hello-api                          ~/lab/hello/ai-packs/hello-api
+   linked   hello-cli                          ~/lab/hello/ai-packs/hello-cli
+   linked   hello-schema                       ~/lab/hello/ai-packs/hello-schema
+   shared   (every repository)                 ~/lab/hello/ai-packs/_workspace
+   created 4 pack(s); each one is a skeleton to fill in
 ```
+
+(deck prints the absolute path, not `~`. Every output on this page is real;
+the only edit is that shortening.)
 
 **The link between a pack and a repository is the directory name.** There is no
 mapping table, because a mapping table is a file nobody keeps current.
@@ -247,10 +262,14 @@ option, `off`/`on`/`yes`/`no` quoted.
 Now watch the filters:
 
 ```bash
-deck toggle ask-plan --stage plan --files hello-cli/main.py        # not asked
-deck toggle ask-plan --stage plan --files hello-schema/contract.yaml   # asked
-deck toggle ask-plan --stage verify --files hello-schema/contract.yaml # not asked
+deck toggle ask-plan --stage plan --files hello-cli/main.py
+deck toggle ask-plan --stage plan --files hello-schema/contract.yaml
+deck toggle ask-plan --stage verify --files hello-schema/contract.yaml
 ```
+
+All three print JSON, and none of them prints nothing: the core's own
+`requirement_link` is asked at `plan` whatever you touch. What changes across
+the three is whether `schema_compat` is in `questions`:
 
 | Situation | Asks `schema_compat`? |
 |---|---|
@@ -267,10 +286,10 @@ deck doctor
 deck packs
 ```
 
-`doctor` should be `OK` everywhere, with two legitimate warnings: the
-repositories have no `origin` remote, and no `target` is declared. **Warnings,
-not problems** — deck distinguishes them, and a workspace with nothing to deploy
-to is a valid state.
+`doctor` should be `OK` everywhere and end with `4 warning(s)` — one per
+repository with no `origin` remote, plus one for the empty `targets` list.
+**Warnings, not problems** — deck distinguishes them, and a workspace with
+nothing to deploy to is a valid state.
 
 `deck packs` lists the four packs in merge order: `_workspace` first, then the
 per-repository ones.
@@ -351,8 +370,17 @@ find hello-schema/.claude hello-api/.claude -type l -o -type f 2>&1
 ```
 
 The rule appears at `hello-schema/.claude/rules/deck-contract.md`, and
-`hello-api/.claude` does not exist. It is a **symlink** into the pack, not a copy:
-the origin stays visible, and editing it there edits the pack.
+`hello-api/.claude` does not exist.
+
+It is placed as a **copy**, not a symlink — `ls -l` shows `-rw-r--r--`. That is
+deliberate and it is not an implementation detail: Claude Code loads
+`.claude/rules/*.md`, and it does not follow a symlink there. A mount that
+reported success while placing something the runtime silently ignores would be
+worse than no mount at all. Every placed file is listed in a manifest under
+`.deck/mounts/`, and `unmount` removes exactly those and nothing else — which is
+why the next command can say `1 removed · 0 left alone` rather than guessing.
+
+Edit the pack, not the copy: re-mounting replaces it.
 
 ```bash
 deck gate run --task HW-1
@@ -407,9 +435,18 @@ deck cost --task HW-1
 ```
 
 `done` refuses a task with no gate evidence, or with a gate that failed: closing
-is a claim about verification, so it wants the record that backs it. `cost`
-covers the window from mount to unmount, and counts only sessions of this
-workspace.
+is a claim about verification, so it wants the record that backs it.
+
+`cost` covers the window from mount to unmount, and counts only sessions of this
+workspace. If you did the whole exercise in a terminal without ever opening
+Claude, it **fails** rather than printing a zero:
+
+```
+deck: no session of this workspace has a transcript yet (~/.claude/projects/…)
+```
+
+That is the right answer. It reads Claude Code's own transcripts, and a zero
+would be indistinguishable from "nothing was spent".
 
 ---
 

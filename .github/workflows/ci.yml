@@ -1,0 +1,43 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+  # deck moves faster than this repository does. A nightly run is what turns
+  # "an exercise broke" from something a reader discovers into something a
+  # maintainer is told.
+  schedule:
+    - cron: "17 4 * * *"
+
+# What is being proved here is not that deck works — deck's own CI does that.
+# It is that every command these exercises tell a reader to type still does
+# what the page says it does. So this fetches deck at its tip and replays the
+# exercises against it, unedited.
+jobs:
+  exercises:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pyyaml pytest ruff
+
+      - name: Identify the committer
+        run: |
+          git config --global user.email "someone@example.com"
+          git config --global user.name "deck exercises"
+          git config --global init.defaultBranch main
+
+      - name: Fetch deck
+        run: git clone --depth 1 https://github.com/devfilipe/deck.git /tmp/deck
+
+      - name: Replay every exercise
+        run: DECK_BIN=/tmp/deck/plugins/deck/bin/deck ./verify.sh

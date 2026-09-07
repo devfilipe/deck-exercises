@@ -1,0 +1,6 @@
+{
+  "routes": [
+    { "path": "/products", "returns": ["sku", "title", "price"] },
+    { "path": "/products/{sku}", "returns": ["sku", "title", "price"] }
+  ]
+}

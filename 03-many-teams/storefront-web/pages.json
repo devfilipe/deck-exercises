@@ -1,0 +1,6 @@
+{
+  "pages": [
+    { "route": "/", "shows": ["title", "price"] },
+    { "route": "/p/{sku}", "shows": ["sku", "title", "price"] }
+  ]
+}

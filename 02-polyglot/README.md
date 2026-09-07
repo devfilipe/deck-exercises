@@ -9,6 +9,9 @@ rather than founding one — which is how most people meet a workspace.
 
 About an hour. No agent required.
 
+> Every command below, and every edit it asks you to make, is replayed by
+> [CI](../verify/02-polyglot.sh) on every push against deck at its tip.
+
 ---
 
 ## Set it up
@@ -20,8 +23,9 @@ deck gate run --task try-it
 ```
 
 `setup.sh` makes the four directories into repositories, seeds `.deck/` and
-copies the board in. Expect **5 gates in 9 runs, all green**, and two warnings
-from `doctor` — no `origin` remote and no `target` — which are valid states.
+copies the board in. Expect **5 gates in 9 runs, all green**, and `5 warning(s)`
+from `doctor` — one per repository with no `origin` remote, plus the empty
+`targets` list. All five are valid states, which is why they are warnings.
 
 ```bash
 ./hello-cli/bin/hello --lang pt      # Olá, Mundo!
@@ -102,9 +106,25 @@ Do them in order. Each one is built on what the previous one left.
 deck board show POLY-1
 ```
 
-The task declares one repository. `reaches` says four, and marks `hello-docs`
-`downstream` — "produces no artifact and still has to keep up". Hold on to that
-distinction; POLY-1 exists to show it.
+```
+POLY-1  Add German (de) to the contract
+
+  status    open
+  repos     hello-commands
+  external  jira:POLY-1
+
+  reaches   hello-commands, hello-core, hello-cli, hello-docs
+```
+
+The task declares **one** repository and `reaches` says four. The fourth is
+`hello-docs`, which produces no artifact and still has to keep up — `deck impact
+hello-commands` is where that is spelled out:
+
+```
+  4. hello-docs  (downstream — keep up, does not build)
+```
+
+Hold on to that distinction; POLY-1 exists to show it.
 
 Claim it, mount, and do exactly what the task names:
 
@@ -116,12 +136,18 @@ deck mount --task POLY-1 --repos hello-commands
 Notice where each rule landed:
 
 ```bash
-find hello-commands/.claude hello-core/.claude hello-cli/.claude -type l 2>/dev/null
+ls hello-commands/.claude/rules hello-core/.claude/rules hello-cli/.claude/rules
 ```
 
 `deck-layering.md` (from `_workspace`) in all three; `deck-adding-a-language.md`
 only in `hello-commands`; `deck-resolution.md` only in `hello-core`. Each pack
 stayed in its own scope without anyone declaring it.
+
+They are **copies**, not symlinks — `ls -l` shows `-rw-r--r--`. Claude Code
+loads `.claude/rules/*.md` and does not follow a symlink there, so a mount that
+linked instead of copying would report success while placing something the
+runtime ignores. Edit the pack, not the copy; the manifest under `.deck/mounts/`
+lists exactly what was placed, and `unmount` removes exactly that.
 
 ```bash
 cat > hello-commands/locales/de.json <<'JSON'
@@ -211,9 +237,11 @@ deck toggle set --at workspace cmd_compat breaking
 deck toggle explain cmd_compat | head -8
 ```
 
-`effective: breaking`, `source: workspace`. The `--scope workspace` matters:
+`effective: breaking`, `source: workspace`. The `--at workspace` matters:
 without it the value is bound to this shell session and disappears in another
-terminal.
+terminal. The layer is `--at`, and the values it takes are `task`, `workspace`,
+or the name of a scope — not to be confused with `deck --scope <name>`, which
+chooses the initiative a command works inside.
 
 ```bash
 deck mount --task POLY-2 --repos hello-commands

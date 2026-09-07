@@ -1,0 +1,8 @@
+{
+  "version": 1,
+  "fields": [
+    { "name": "sku", "type": "string", "required": true },
+    { "name": "title", "type": "string", "required": true },
+    { "name": "price", "type": "integer", "required": true }
+  ]
+}
