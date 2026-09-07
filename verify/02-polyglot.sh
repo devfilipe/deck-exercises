@@ -187,9 +187,14 @@ p.write_text(s)
 PY
 capture -- deck gate run --task POLY-3
 exited "the tests still demand the decision that was revoked" 1
-also "one asserts an exception that no longer comes" \
-  "DID NOT RAISE <class 'hello_core.catalog.UnknownLocale'>"
-also "and the other captures the fallback" "Hello, World!"
+# Assert the test names and the failure kind, not pytest's wording of them:
+# how much of the traceback pytest prints, and whether it spells the exception
+# out in full, varies by version, and neither is a claim this exercise makes.
+also "one asserts an exception that no longer comes" "DID NOT RAISE"
+also "naming the test that encoded the old decision" \
+  "test_an_undeclared_language_is_refused"
+also "and the other still demands the loud failure" \
+  "test_an_undeclared_language_fails_loudly"
 
 python3 - <<'PY'
 import pathlib
