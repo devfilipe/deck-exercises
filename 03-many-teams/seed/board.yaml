@@ -1,0 +1,22 @@
+version: 1
+tasks:
+- id: CAT-1
+  title: Publish a price-history field on the contract
+  repos: [catalog-schema]
+  status: open
+  exclusive: false
+- id: CAT-2
+  title: Serve price history from the api
+  repos: [catalog-api]
+  status: open
+  exclusive: false
+- id: WEB-1
+  title: Show price history on the product page
+  repos: [storefront-web]
+  status: open
+  exclusive: false
+- id: OPS-1
+  title: Roll the deployment scripts forward for the new route
+  repos: [deploy-scripts]
+  status: open
+  exclusive: false

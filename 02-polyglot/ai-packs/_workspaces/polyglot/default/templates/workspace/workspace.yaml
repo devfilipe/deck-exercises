@@ -1,0 +1,15 @@
+# Seeded by `deck pack new --from-workspace`.
+# Targets were left empty on purpose: an allowlist is a decision, not a copy.
+
+requires_files: []
+repos:
+  hello-cli:
+    path: hello-cli
+    impacts: []
+  hello-commands:
+    path: hello-commands
+    impacts: []
+  hello-core:
+    path: hello-core
+    impacts: []
+targets: []

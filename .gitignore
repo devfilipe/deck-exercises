@@ -1,0 +1,24 @@
+# Written by the exercises, and by deck. Never committed.
+.deck/
+docs/
+__pycache__/
+.pytest_cache/
+.ruff_cache/
+*.pyc
+
+# setup.sh turns the exercise directories into repositories on your machine.
+# Those checkouts are yours, not part of this repository.
+02-polyglot/hello-commands/.git/
+02-polyglot/hello-core/.git/
+02-polyglot/hello-cli/.git/
+02-polyglot/hello-docs/.git/
+02-polyglot/ai-packs/.git/
+
+# Exercise 3 makes these into repositories, and has you create the two pack
+# collections yourself. Both are yours, not part of this repository.
+03-many-teams/catalog-schema/.git/
+03-many-teams/catalog-api/.git/
+03-many-teams/storefront-web/.git/
+03-many-teams/deploy-scripts/.git/
+03-many-teams/org-packs/
+03-many-teams/ai-packs/

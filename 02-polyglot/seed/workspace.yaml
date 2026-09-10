@@ -1,0 +1,35 @@
+# Seed for ai-packs/_workspaces/polyglot/default/workspace.yaml.
+#
+# `.deck/` is normally NOT versioned — it holds paths, hosts and tokens that
+# differ per person. This file is shipped because the exercise needs the edges
+# and the roles, and every path in it is relative. `setup.sh` copies it in.
+version: 1
+packs_root: ai-packs
+requires_files: []
+paths: {}
+
+repos:
+  hello-commands:
+    path: hello-commands
+    role: layer 1 — the JSON contract, and the only place a language is declared
+    impacts: [hello-core, hello-cli, hello-docs]
+  hello-core:
+    path: hello-core
+    role: layer 2 — objects that load the contract and resolve a code
+    impacts: [hello-cli]
+  hello-docs:
+    path: hello-docs
+    role: the published language table — builds nothing, must keep up
+    downstream: true
+    impacts: []
+  hello-cli:
+    path: hello-cli
+    role: layer 3 — the app; holds no greeting and no language name
+    impacts: []
+
+targets: []
+
+backlog:
+- { type: tasks, file: docs/board.yaml }
+
+packs: []

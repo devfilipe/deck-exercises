@@ -1,0 +1,26 @@
+version: 1
+
+toggles:
+  - id: unknown_locale
+    group: quality
+    title: Unknown language code
+    summary: What happens when someone asks for a language the contract does not declare.
+    type: enum
+    values: [error, fallback_en]
+    default: ask
+    stage: [plan]
+    applies_to: ["hello-core/**", "hello-cli/**"]
+    risk: medium
+    rationale: >
+      A typo and a genuinely missing translation are the same input. Failing
+      loudly catches the typo at the cost of a harsher CLI; falling back to
+      English is kinder and hides a missing translation for months.
+    impact:
+      error: A typo is caught immediately. A missing translation stops the caller.
+      fallback_en: Nothing ever fails, and nobody finds out a language is missing.
+    question:
+      header: Unknown
+      text: A language code nobody declared — fail, or fall back to English?
+      options:
+        - { value: error,       label: Fail loudly, description: "Catches typos; a missing translation stops the caller." }
+        - { value: fallback_en, label: Fall back,   description: "Never fails, and never tells you a language is missing." }

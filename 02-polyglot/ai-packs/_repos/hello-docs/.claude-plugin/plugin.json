@@ -1,0 +1,9 @@
+{
+  "name": "hello-docs",
+  "description": "The published table, and what keeps it honest",
+  "version": "0.1.0",
+  "keywords": [
+    "deck",
+    "pack"
+  ]
+}

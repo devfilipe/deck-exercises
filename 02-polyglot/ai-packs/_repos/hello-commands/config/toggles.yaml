@@ -1,0 +1,29 @@
+version: 1
+
+toggles:
+  - id: cmd_compat
+    group: quality
+    title: Contract compatibility
+    summary: How far a change may alter what hello-commands publishes.
+    type: enum
+    values: [strict, additive, breaking]
+    default: ask
+    stage: [plan]
+    applies_to: ["hello-commands/**"]
+    risk: high
+    rationale: >
+      hello-core and hello-cli read this contract by key name. Renaming a key is
+      invisible to every test that only checks the file parses, and shows up two
+      layers away as a KeyError nobody expected. Declaring the intent first is
+      what makes the propagation deliberate instead of accidental.
+    impact:
+      strict: Nothing published changes. New files only.
+      additive: New keys and new locale files. Every existing name survives.
+      breaking: A key is renamed or removed. hello-core and hello-cli must land together.
+    question:
+      header: Contract
+      text: May this change rename or remove something the contract publishes?
+      options:
+        - { value: strict,   label: No change,  description: "Adding files only, nothing existing moves." }
+        - { value: additive, label: Add only,   description: "New keys; every existing name keeps working." }
+        - { value: breaking, label: May break,  description: "Core and cli have to be updated in the same delivery." }

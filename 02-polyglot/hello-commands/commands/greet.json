@@ -1,0 +1,7 @@
+{
+  "name": "greet",
+  "summary": "Print the greeting for one language",
+  "params": [
+    { "name": "lang", "type": "locale", "required": true, "help": "ISO 639-1 code" }
+  ]
+}

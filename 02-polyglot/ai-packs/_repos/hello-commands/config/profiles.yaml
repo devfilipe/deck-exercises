@@ -1,0 +1,23 @@
+# Named postures. A profile is the base layer; anything set in
+# .deck/toggles.yaml, in the environment, or on the task still wins over it.
+#
+# Switching profile is how a team changes stance in one phrase — "today is a
+# hotfix day" — without editing twenty lines of configuration.
+
+version: 1
+
+# Entries go under the key below, indented as the example is. Uncomment it and
+# edit, or delete it and write your own.
+profiles:
+
+# Example — delete once you have your own:
+#
+#   release:
+#     title: Release candidate
+#     summary: >
+#       What runs before cutting a release: the whole ladder, the full suite,
+#       and the contract treated as frozen.
+#     values:
+#       gate_level: behavior
+#       test_depth: full
+#       doc_sync: required

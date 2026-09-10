@@ -1,0 +1,21 @@
+# How deck recognises a hello-commands workspace, and what it needs installed.
+#
+# Markers are checked before any descriptor is read — root resolution has to
+# happen first — so they cannot live in the descriptor. Name one or two files
+# that only this kind of workspace has.
+markers:
+  # - .my-workspace-marker
+
+# `deck doctor` checks these are on PATH. Mark the optional ones so a missing
+# one is a warning rather than a problem.
+prerequisites:
+  - git
+
+# Packs this one builds on, by name. They merge BEFORE it, so anything this
+# pack marks `overrides: true` wins over theirs — which is the whole reason to
+# declare a requirement rather than trust the order to come out right.
+# `deck packs` shows the resulting order; `deck doctor` reports one that is
+# missing or circular.
+requires: []
+# requires:
+#   - yocto-base

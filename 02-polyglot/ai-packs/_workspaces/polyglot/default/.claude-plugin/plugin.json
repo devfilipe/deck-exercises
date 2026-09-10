@@ -1,0 +1,9 @@
+{
+  "name": "_workspace",
+  "description": "Knowledge that applies to every repository here",
+  "version": "0.1.0",
+  "keywords": [
+    "deck",
+    "pack"
+  ]
+}
